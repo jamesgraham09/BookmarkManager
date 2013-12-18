@@ -5,6 +5,7 @@ require './lib/link.rb'
 		context "Demonstration of how datamapper works" do
 			it " " do
 				# Note that this is a 'fake' test to get used to the syntax
+				Link.all.each{|l| l.destroy}
 				expect(Link.count).to eq(0)
 				Link.create(:title => "Makers Academy",
 					:url => "http://www.makersacademy.com")
