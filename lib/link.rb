@@ -2,6 +2,7 @@
 class Link
 	#makes instances of the link class datamapper resources
 	#then describe the resources out model will have
+	# has n, :tags, :through => resource
 	include DataMapper::Resource
 	property :id, Serial
 	property :title, String
