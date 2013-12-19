@@ -10,10 +10,15 @@ feature "User signs up" do
 		expect(User.first.email).to eq("alice@example.com")
 	end
 
-	def sign_up(email = "alice@example.com", password = "oranges!")
+	scenario "with a password that doesnt match" do
+		lambda { sign_up("a@b.com", "right", "wrong") }.should change(User, :count).by(0)
+	end
+
+	def sign_up(email = "alice@example.com", password = "oranges!", password_confirmation = "oranges!")
 		visit '/users/new'
 		fill_in :email, :with => email
 		fill_in :password, :with => password
+		fill_in :password_confirmation, :with => password_confirmation
 		click_button "Sign up"
 	end
 end
