@@ -1,17 +1,17 @@
 require 'data_mapper'
 require 'sinatra'
-env = ENV["RACK_ENV"] || "development"
-
-DataMapper.setup(:default, "postgres://localhost/bookmark_manager_#{env}") #this is called a 'connection string'
 
 require './lib/link' #telling the mapper where the database is, after the datamapper is initialised
+require './lib/user'
 require './lib/tag'
 
-DataMapper.finalize #finalise the models after declaring them
-
-DataMapper.auto_upgrade! #tell datamapper to create the databases
+require_relative 'data_mapper_setup'
+require_relative 'helpers/application'
 
 set :root, File.dirname(__FILE__)
+
+enable :sessions
+set :session_secret,"test"
 
 get '/' do
 	@links = Link.all
@@ -33,3 +33,15 @@ get '/tags/:text' do
 	@links = tag ? tag.links : []
 	erb :index
 end
+
+get '/users/new' do
+	erb :"users/new"
+end
+
+post '/users' do
+	user = User.create(:email => params[:email],
+					:password => params[:password])
+	session[:user_id] = user.id
+	redirect to('/')
+end
+

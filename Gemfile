@@ -4,6 +4,7 @@ gem 'dm-postgres-adapter'
 gem 'sinatra'
 gem 'capybara'
 gem 'database_cleaner'
+gem 'bcrypt-ruby'
 
 group :development, :test do
 	gem 'rspec'
