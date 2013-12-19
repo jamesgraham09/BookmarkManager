@@ -1,5 +1,6 @@
 require 'data_mapper'
 require 'sinatra'
+require 'rack-flash'
 
 require './lib/link' #telling the mapper where the database is, after the datamapper is initialised
 require './lib/user'
@@ -12,6 +13,7 @@ set :root, File.dirname(__FILE__)
 
 enable :sessions
 set :session_secret,"test"
+use Rack::Flash
 
 get '/' do
 	@links = Link.all
@@ -34,14 +36,20 @@ get '/tags/:text' do
 	erb :index
 end
 
-get '/users/new' do
-	erb :"users/new"
-end
-
 post '/users' do
-	user = User.create(:email => params[:email],
+	@user = User.create(:email => params[:email],
 					:password => params[:password],
 					:password_confirmation => params[:password_confirmation])
-	session[:user_id] = user.id
-	redirect to('/')
+	if @user.save
+		session[:user_id] = @user.id
+		redirect to('/')
+	else
+		flash[:notice] = "Sorry, your passwords don't match"
+		erb :"users/new"
+	end
+end
+
+get '/users/new' do
+	@user = User.new
+	erb :"users/new"
 end
